@@ -1,5 +1,10 @@
 dist: xenial
-
+notifications:
+  email:
+    recipients:
+      - juaferfer11@alum.us.es
+    on_success: always
+    on_failure: always
 services:
   - postgresql
 addons:
