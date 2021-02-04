@@ -7,26 +7,26 @@ notifications:
     on_failure: always
 services:
   - postgresql
+sudo: required
 addons:
   postgresql: "9.4"
+  chrome: stable
 before_script:
   - psql -U postgres -c "create user decide password 'decide'"
   - psql -U postgres -c "create database test_decide owner decide"
   - psql -U postgres -c "ALTER USER decide CREATEDB"
+  - "CHROME_MAIN_VERSION=`google-chrome-stable --version | sed -E 's/(^Google Chrome |\\.[0-9]+ )//g'`"
+  - "CHROMEDRIVER_VERSION=`curl -s \"https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAIN_VERSION\"`"
+  - "curl \"https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip\" -O"
+  - "unzip chromedriver_linux64.zip -d ~/bin"
 language: python
 python:
-  - "2.7"
-  - "3.3"
   - "3.6"
-env:
-  - DJANGO_VERSION=2.0
-  - DJANGO_VERSION=2.1.13
 install:
-  - pip install -q Django==$DJANGO_VERSION
   - pip install -r requirements.txt
   - pip install codacy-coverage
 script:
   - cd decide
-  - coverage run --branch --source=. ./manage.py test --keepdb --with-xunit
+  - coverage run --branch --source=. ./manage.py test voting --keepdb 
   - coverage xml
   - python-codacy-coverage -r coverage.xml
