@@ -12,5 +12,6 @@
     db: decide
     name: decide
     password: decide
+    encrypted: yes
     priv: ALL
 
