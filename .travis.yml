@@ -27,6 +27,12 @@ install:
   - pip install codacy-coverage
 script:
   - cd decide
-  - coverage run --branch --source=. ./manage.py test voting --keepdb 
+  - cp travis_local_settings.py local_settings.py
+  - coverage run --branch --source=. ./manage.py test mixnet --keepdb 
   - coverage xml
   - python-codacy-coverage -r coverage.xml
+deploy:
+  provider: heroku
+  app: prueba-examen-egc
+  strategy: git
+  api_key: $HEROKU_AUTH_TOKEN
