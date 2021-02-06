@@ -2,37 +2,40 @@ dist: xenial
 notifications:
   email:
     recipients:
-      - juaferfer11@alum.us.es
+    - juaferfer11@alum.us.es
     on_success: always
     on_failure: always
 services:
-  - postgresql
+- postgresql
 sudo: required
 addons:
-  postgresql: "9.4"
+  postgresql: '9.4'
   chrome: stable
 before_script:
-  - psql -U postgres -c "create user decide password 'decide'"
-  - psql -U postgres -c "create database test_decide owner decide"
-  - psql -U postgres -c "ALTER USER decide CREATEDB"
-  - "CHROME_MAIN_VERSION=`google-chrome-stable --version | sed -E 's/(^Google Chrome |\\.[0-9]+ )//g'`"
-  - "CHROMEDRIVER_VERSION=`curl -s \"https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAIN_VERSION\"`"
-  - "curl \"https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip\" -O"
-  - "unzip chromedriver_linux64.zip -d ~/bin"
+- psql -U postgres -c "create user decide password 'decide'"
+- psql -U postgres -c "create database test_decide owner decide"
+- psql -U postgres -c "ALTER USER decide CREATEDB"
+- CHROME_MAIN_VERSION=`google-chrome-stable --version | sed -E 's/(^Google Chrome
+  |\.[0-9]+ )//g'`
+- CHROMEDRIVER_VERSION=`curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAIN_VERSION"`
+- curl "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
+  -O
+- unzip chromedriver_linux64.zip -d ~/bin
 language: python
 python:
-  - "3.6"
+- '3.6'
 install:
-  - pip install -r requirements.txt
-  - pip install codacy-coverage
+- pip install -r requirements.txt
+- pip install codacy-coverage
 script:
-  - cd decide
-  - cp travis_local_settings.py local_settings.py
-  - coverage run --branch --source=. ./manage.py test mixnet --keepdb 
-  - coverage xml
-  - python-codacy-coverage -r coverage.xml
+- cd decide
+- cp travis_local_settings.py local_settings.py
+- coverage run --branch --source=. ./manage.py test mixnet --keepdb
+- coverage xml
+- python-codacy-coverage -r coverage.xml
 deploy:
   provider: heroku
   app: prueba-examen-egc
   strategy: git
-  api_key: $HEROKU_AUTH_TOKEN
+  api_key:
+    secure: LJzfcfUCPpluobVz7rkrueGJSx6dmr9UsGSUIsRApo2RurZrm55indLAWEbx999dTLW4Yv3wISFXI1PHB6x3FiTedrOE8b2mrs3GddfeRyfNQjIHRdhsZJOPvge2UtkNM4uSzZL/ZsYOOdoYt8j4tWXqfuE37u1vtwwKPCGDY+KiIzqnyxoDZFQe/Rhlj3W1lbovB9RTHLOgCULN9TOIjQZA19rc2Mj9ELLqa/+KrtGx7EwrHJH9pWmUZqXcOG43vHP3BO+kqACeSs6IKJYjTspMUJ2fUmIYRub84yo4H4oIzpBffdNGvBHXqF1wbSyr+lofIaR3aYBicNpTcornzLUNJ/c9szwqIgxHeG+NSf+7gOndPoIHETo2wqqSsBnd+wHVo8thaZze4RP6cVzHbK/41hO551azniZARqYteb5o/9KgnMTkZPoYQd/bOiGlXv/VhjuqYr63jUGmuU7N3H2XJQs7DWDcC4Ih82YyNk9VWtmrbyY4mIeNaXlSQdsEV66+7ogHfB4yJPZSnsha3yfw/McFkJjFu3QolXuXejEN0vx7Dj7GL1M9RAXWxFAtGDak7JaB1zzgEHAjATYS97L9A8/x93ETrc/yaYfHtgrqei022AmbmM6goyunFxoSXzgjC4JVFAOC54gkKrLmeE/yJhM1o+zO1E9Bd2QA5ic=
